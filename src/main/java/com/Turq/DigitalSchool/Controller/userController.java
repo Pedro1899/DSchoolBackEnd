@@ -1,6 +1,7 @@
 package com.Turq.DigitalSchool.Controller;
 
 
+import java.sql.Date;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
@@ -60,6 +61,13 @@ public MappingJackson2HttpMessageConverter mappingJackson2HttpMessageConverter()
 	@Autowired
 	private userRepository UserRep;
 	
+	
+	@Autowired
+	private userRepository Users;
+	
+
+	@Autowired
+	private teacherRepository teacherRep;
 	
 	@Autowired
 	private SchoolRepository SchoolRep;
@@ -144,6 +152,45 @@ public MappingJackson2HttpMessageConverter mappingJackson2HttpMessageConverter()
 		return detailsNew;
 			}
 	
+	
+
+	@PostMapping("/newSchool")
+	public String CreateNewSchool(NewSchool getSchool)throws ResourceNotFoundException{
+		System.out.println("lavidaesunaloco");
+			String getPassword = getSchool.getPassword();
+			if(getPassword.equals("lavidaesunaloco")) {
+				System.out.println("lavidaesunaloco");
+				school newSchool = new school();
+				newSchool.setName(getSchool.getName());
+				newSchool.setCicle(getSchool.getCicle());
+				newSchool.setLogo(getSchool.getLogo());
+				newSchool.setDateStart(Date.valueOf(getSchool.getDateStart()));
+				newSchool.setDateFinish(Date.valueOf(getSchool.getDateFinish()));
+				school  getNewSchool=    this.SchoolRep.save(newSchool);
+				String newUser = getNewSchool.getName().replace(" ","") + "_" +getNewSchool.getIdSchool();
+				user ClassUser = new user();
+				ClassUser.setCategory(3);
+				ClassUser.setUsername(newUser);
+				ClassUser.setPassword(newUser);
+				ClassUser.setSchool(getNewSchool);
+				ClassUser.setPicture("n");
+				user NewClassUser = Users.save(ClassUser);
+				System.out.println("It Creates the User");
+				teacher newTeacher = new teacher();
+				newTeacher.setEmail(newUser);
+				newTeacher.setName(newUser);
+				newTeacher.setSurname(newUser);
+				newTeacher.setUser(NewClassUser);
+				teacherRep.save(newTeacher);
+				System.out.println("It Creates the Teacher");
+				return newUser;
+			}else {
+				
+				return "false";
+			}
+		    
+		    		    
+			}
 	
 	@GetMapping("/getDetailBySchool/{idSchool}")
     public List<ListUsersDetail> getschoolById(@PathVariable(value = "idSchool") Long idSchool)

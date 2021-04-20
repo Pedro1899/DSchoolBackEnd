@@ -97,18 +97,15 @@ public class schoolController {
 			}
 	
 	
-	@PostMapping("/newSchool")
-	public String CreateNewSchool(NewSchool getSchool)throws ResourceNotFoundException{
-	
-			String getPassword = getSchool.getPassword();
-			if(getPassword.equals("lavidaesunaloco")) {
+	@PostMapping("/newSchool/{name}/{password}")
+	public String CreateNewSchool(@PathVariable (value = "name") String name, @PathVariable (value = "password") String Password)throws ResourceNotFoundException{
+		System.out.println("lavidaesunaloco");
+			
+			if(Password.equals("lavidaesunaloco")) {
 				System.out.println("lavidaesunaloco");
 				school newSchool = new school();
-				newSchool.setName(getSchool.getName());
-				newSchool.setCicle(getSchool.getCicle());
-				newSchool.setLogo(getSchool.getLogo());
-				newSchool.setDateStart(Date.valueOf(getSchool.getDateStart()));
-				newSchool.setDateFinish(Date.valueOf(getSchool.getDateFinish()));
+				newSchool.setName(name);
+				
 				school  getNewSchool=    this.SchoolRep.save(newSchool);
 				String newUser = getNewSchool.getName().replace(" ","") + "_" +getNewSchool.getIdSchool();
 				user ClassUser = new user();

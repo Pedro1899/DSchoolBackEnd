@@ -1,6 +1,8 @@
 package com.Turq.DigitalSchool.Controller;
 
 import java.sql.Date;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -126,7 +128,7 @@ public class activityController {
 
 	@GetMapping("/getActivity/{idUser}")
 	public List<sendActivityWithCoursesList> getAllActivitybyTeacher(@PathVariable(value="idUser") Long idUser) throws ResourceNotFoundException {
-	   
+		System.out.println("INSIDE ");
 		
 		List<sendActivityWithCoursesList> ActivityAnswer = new ArrayList<>();
 		teacher getTeacher = teacherRep.teacherByIdUser(idUser);
@@ -144,7 +146,21 @@ public class activityController {
 			sendActivityWithCoursesList activityPivot = new sendActivityWithCoursesList();
 			activityPivot.setTitle(ListActivities.get(countActivity).getActivityTitle());
 			activityPivot.setDescription(ListActivities.get(countActivity).getActivityDescription());
-			activityPivot.setDateActivity(ListActivities.get(countActivity).getActivityDate());
+			 System.out.println("/******************************************************/");
+			  System.out.println("/****************C A M B I O  **************************************/");
+			  String startDateString = ListActivities.get(countActivity).getActivityDate();
+			    SimpleDateFormat sdf2 = new SimpleDateFormat("MM-dd-yyyy");
+			    SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+			    try {
+			    	startDateString =sdf2.format(sdf.parse(startDateString));
+					System.out.println(sdf2.format(sdf.parse(startDateString)));
+				} catch (ParseException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+
+	activityPivot.setDateActivity(startDateString);
+	 System.out.println("SEND DATE ACTIVITY "  + startDateString);
 			activityPivot.setPhoto(ListActivities.get(countActivity).getActivityfoto());
 			activityPivot.setCategory(ListActivities.get(countActivity).getActivityCategory());
 			activityPivot.setIdCourses(activityCourseRep.getCoursesbyActivity(ListActivities.get(countActivity),courses));
